@@ -1,5 +1,5 @@
 project(
-    'win-ip-adapter-info',
+    'ip-adapter-info',
     'cpp',
     version: '1.0.0',
     default_options: ['warning_level=3', 'werror=false', 'cpp_std=c++20'],
@@ -17,4 +17,4 @@ if host_machine.system() == 'windows'
     dependencies += ws_deps
 endif
 
-executable('adapter', 'main.cpp', dependencies: dependencies)
+executable('example', 'src/example.cpp', dependencies: dependencies)
