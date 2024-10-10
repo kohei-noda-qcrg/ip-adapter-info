@@ -7,14 +7,7 @@ project(
 add_project_arguments('-Wfatal-errors', language: 'cpp')
 add_project_arguments('-Wno-missing-field-initializers', language: 'cpp')
 
-dependencies = []
-if host_machine.system() == 'windows'
-    cpp = meson.get_compiler('cpp')
-    ws_deps = [
-        cpp.find_library('ws2_32'),
-        cpp.find_library('IPHLPAPI'),
-    ]
-    dependencies += ws_deps
-endif
+subdir('src')
+dependencies = ip_adapter_deps
 
-executable('example', 'src/example.cpp', dependencies: dependencies)
+executable('example', files('src/example.cpp') + ip_adapter_files, dependencies: dependencies)
