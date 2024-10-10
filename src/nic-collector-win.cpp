@@ -1,3 +1,4 @@
+#include <bit>
 #include <iphlpapi.h>
 #include <winsock2.h>
 
@@ -7,22 +8,16 @@
 
 auto get_adapters() -> std::optional<std::vector<AdapterInfo>> {
     auto adapters    = std::vector<AdapterInfo>{};
-    auto buffer_size = ULONG(sizeof(IP_ADAPTER_INFO));
+    auto buffer_size = ULONG{0};
 
-    IP_ADAPTER_INFO* adapter_info = (IP_ADAPTER_INFO*)malloc(buffer_size);
-    if(GetAdaptersInfo(adapter_info, &buffer_size) == ERROR_BUFFER_OVERFLOW) {
-        free(adapter_info);
-        adapter_info = (IP_ADAPTER_INFO*)malloc(buffer_size);
-    }
+    ensure(GetAdaptersInfo(NULL, &buffer_size) == ERROR_BUFFER_OVERFLOW);
+    auto buffer = std::vector<std::byte>(buffer_size);
 
-    const auto ret = GetAdaptersInfo(adapter_info, &buffer_size);
+    const auto ret = GetAdaptersInfo(std::bit_cast<PIP_ADAPTER_INFO>(buffer.data()), &buffer_size);
     ensure(ret == NO_ERROR, "GetAdaptersInfo failed, return code: ", ret);
+    auto adapter_info = std::bit_cast<PIP_ADAPTER_INFO>(buffer.data());
     while(adapter_info) {
-        auto address = std::array<uint8_t, 4>{};
-        ensure(
-            sscanf(adapter_info->IpAddressList.IpAddress.String, "%hhu.%hhu.%hhu.%hhu", &address[0], &address[1], &address[2], &address[3]) == 4,
-            "invalid ip address: ", adapter_info->IpAddressList.IpAddress.String);
-        adapters.emplace_back(AdapterInfo{adapter_info->AdapterName, address});
+        adapters.emplace_back(AdapterInfo{adapter_info->AdapterName, adapter_info->IpAddressList.IpAddress.String});
         adapter_info = adapter_info->Next;
     }
 
