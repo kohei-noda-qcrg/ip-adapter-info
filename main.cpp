@@ -3,7 +3,7 @@
 #include <winsock2.h>
 
 int main() {
-    auto             buffer_size   = ULONG(sizeof(IP_ADAPTER_INFO));
+    auto             buffer_size  = ULONG(sizeof(IP_ADAPTER_INFO));
     IP_ADAPTER_INFO* adapter_info = (IP_ADAPTER_INFO*)malloc(buffer_size);
     if(GetAdaptersInfo(adapter_info, &buffer_size) == ERROR_BUFFER_OVERFLOW) {
         free(adapter_info);
