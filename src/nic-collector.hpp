@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -8,4 +9,4 @@ struct AdapterInfo {
     std::array<uint8_t, 4> address;
 };
 
-auto get_adapters() -> std::vector<AdapterInfo>;
+auto get_adapters() -> std::optional<std::vector<AdapterInfo>>;
