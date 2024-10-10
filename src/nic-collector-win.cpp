@@ -1,9 +1,9 @@
 #include <bit>
+
 #include <iphlpapi.h>
 #include <winsock2.h>
 
 #include "macros/assert.hpp"
-
 #include "nic-collector.hpp"
 
 auto get_adapters() -> std::optional<std::vector<AdapterInfo>> {
