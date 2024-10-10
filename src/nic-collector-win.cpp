@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <iphlpapi.h>
 #include <winsock2.h>
 
